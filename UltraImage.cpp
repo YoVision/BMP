@@ -34,3 +34,23 @@ void UltraImage::Load(const char *fileName){
 
     file.close();
 }
+
+void UltraImage::Conv2Gray(){
+     unsigned char R,G,B;
+     unsigned char gray;
+    
+     for(int y = 0; y < height; y++) {
+        for(int x = 0; x < width; x++) {
+
+            R = ImgValue_s[3 * (width*y+x) + 2];
+            G = ImgValue_s[3 * (width*y+x) + 1];
+            B = ImgValue_s[3 * (width*y+x) + 0];
+
+            gray = ( R*11 + G*16 + B*5 )/32; // define gray color
+            //gray = 0.299*R + 0.587*G + 0.114*B;
+            ImgValue_t[3 * (width*y+x) + 2] = gray;
+            ImgValue_t[3 * (width*y+x) + 1] = gray;
+            ImgValue_t[3 * (width*y+x) + 0] = gray;
+       }
+    }
+}  
