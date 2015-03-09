@@ -53,4 +53,15 @@ void UltraImage::Conv2Gray(){
             ImgValue_t[3 * (width*y+x) + 0] = gray;
        }
     }
-}  
+}
+/*
+void UltraImage::Save(const char *fileName){
+    ofstream file(fileName, ios::out|ios::binary );
+    if(!file)
+        cout << " Write image error!!" << endl;
+    
+    file.write((char*)ImgValue_t,sizeof(char)*width * height * 3);    
+    
+    file.close();
+}
+*/
