@@ -7,7 +7,7 @@ class UltraImage{
 public:
        UltraImage();
        void Load(const char*);
-       //void Save(const char*);
+       void Save(const char*);
        void Conv2Gray();
        //void DownSample(int);
        //void Mirror_y();

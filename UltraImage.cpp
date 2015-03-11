@@ -54,14 +54,15 @@ void UltraImage::Conv2Gray(){
        }
     }
 }
-/*
+
 void UltraImage::Save(const char *fileName){
     ofstream file(fileName, ios::out|ios::binary );
     if(!file)
         cout << " Write image error!!" << endl;
     
+    file.seekp(rgb_raw_data_offset,ios::beg);
     file.write((char*)ImgValue_t,sizeof(char)*width * height * 3);    
     
     file.close();
 }
-*/
+
