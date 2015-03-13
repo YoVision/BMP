@@ -56,11 +56,53 @@ void UltraImage::Conv2Gray(){
 }
 
 void UltraImage::Save(const char *fileName){
+     
+    unsigned char header[54] = {
+      0x42,        // identity : B
+      0x4d,        // identity : M
+      0, 0, 0, 0,  // file size
+      0, 0,        // reserved1
+      0, 0,        // reserved2
+      54, 0, 0, 0, // RGB data offset
+      40, 0, 0, 0, // struct BITMAPINFOHEADER size
+      0, 0, 0, 0,  // bmp width
+      0, 0, 0, 0,  // bmp height
+      1, 0,        // planes
+      24, 0,       // bit per pixel
+      0, 0, 0, 0,  // compression
+      0, 0, 0, 0,  // data size
+      0, 0, 0, 0,  // h resolution
+      0, 0, 0, 0,  // v resolution 
+      0, 0, 0, 0,  // used colors
+      0, 0, 0, 0   // important colors
+    };
+    unsigned int file_size;    
     ofstream file(fileName, ios::out|ios::binary );
     if(!file)
         cout << " Write image error!!" << endl;
     
-    file.seekp(rgb_raw_data_offset,ios::beg);
+    // file size  
+    file_size = width * height * 3 + rgb_raw_data_offset;
+    header[2] = (unsigned char)(file_size & 0x000000ff);
+    header[3] = (file_size >> 8)  & 0x000000ff;
+    header[4] = (file_size >> 16) & 0x000000ff;
+    header[5] = (file_size >> 24) & 0x000000ff;  
+    // width
+    header[18] = width & 0x000000ff;
+    header[19] = (width >> 8)  & 0x000000ff;
+    header[20] = (width >> 16) & 0x000000ff;
+    header[21] = (width >> 24) & 0x000000ff;
+
+    // height
+    header[22] = height &0x000000ff;
+    header[23] = (height >> 8)  & 0x000000ff;
+    header[24] = (height >> 16) & 0x000000ff;
+    header[25] = (height >> 24) & 0x000000ff;  
+ 
+    // write header
+    file.write((char*)header, sizeof(header));
+
+    // write image
     file.write((char*)ImgValue_t,sizeof(char)*width * height * 3);    
     
     file.close();

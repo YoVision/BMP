@@ -10,7 +10,7 @@ int main()
     clena.Load("pic.bmp");
     clena.Conv2Gray();
 
-    //clena.Save("pic_test.bmp");
+    clena.Save("pic_test.bmp");
     
     system("pause");
     return 0;
