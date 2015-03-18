@@ -9,12 +9,8 @@ public:
        void Load(const char*);
        void Save(const char*);
        void Conv2Gray();
-       //void DownSample(int);
-       //void Mirror_y();
-       //void Mirror_x();
-       //void Rotate_CW();
-       //void Rotate_CCW();
-       //void Rotate_2(double);
+       void DownSample(int);
+       //void Rotate(double);
 
 private:
        int width,height;        // image width, image height

@@ -108,3 +108,30 @@ void UltraImage::Save(const char *fileName){
     file.close();
 }
 
+
+void UltraImage::DownSample(int fac){
+    factor = fac;
+    width_d = width / factor;
+    height_d = height / factor;
+    
+    for(int y=0; y < height_d; ++y){
+        for(int x=0; x < width_d; ++x){
+            unsigned char R = ImgValue_s[3 * (width*(y*factor)+(x*factor) ) + 2];
+            unsigned char G = ImgValue_s[3 * (width*(y*factor)+(x*factor) ) + 1];
+            unsigned char B = ImgValue_s[3 * (width*(y*factor)+(x*factor) ) + 0];
+            
+            ImgValue_t[3 * (width_d*y+x) + 2] = R;
+            ImgValue_t[3 * (width_d*y+x) + 1] = G;
+            ImgValue_t[3 * (width_d*y+x) + 0] = B;
+            
+            ImgValue_s[3 * (width_d*y+x) + 2] = R;
+            ImgValue_s[3 * (width_d*y+x) + 1] = G;
+            ImgValue_s[3 * (width_d*y+x) + 0] = B;       
+        }
+    }
+
+    ImgValue_s = ImgValue_t;
+    height = height_d;
+    width = width_d;
+}
+
