@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <cmath>
 #include "UltraImage.h"
 using namespace std;
@@ -11,13 +13,21 @@ UltraImage::UltraImage(){
     width_d = 0;
     height_d = 0;
     rgb_raw_data_offset = 0;
+    file_size = 0;
+    biSizeImage = 0;
 }
 
 void UltraImage::Load(const char *fileName){
     ifstream file(fileName, ios::in|ios::binary );
     if(!file)
         cout << " Read image error!!" << endl;
-        
+
+    // move offset to 3 to find bit data size
+    file.seekg(2,ios::beg);
+    file.read((char*)&file_size,sizeof(int));
+    // move offset to 34 to find bit data size
+    file.seekg(34,ios::beg);
+    file.read((char*)&biSizeImage,sizeof(int));      
     // move offset to 10 to find rgb raw data offset
     file.seekg(10,ios::beg);
     file.read((char*)&rgb_raw_data_offset,sizeof(int));        
@@ -56,8 +66,8 @@ void UltraImage::Conv2Gray(){
 }
 
 void UltraImage::Save(const char *fileName){
-     
-    unsigned char header[54] = {
+
+     char header[54] = {
       0x42,        // identity : B
       0x4d,        // identity : M
       0, 0, 0, 0,  // file size
@@ -76,17 +86,18 @@ void UltraImage::Save(const char *fileName){
       0, 0, 0, 0,  // used colors
       0, 0, 0, 0   // important colors
     };
-    unsigned int file_size;    
+   
     ofstream file(fileName, ios::out|ios::binary );
+     
     if(!file)
         cout << " Write image error!!" << endl;
-    
-    // file size  
-    file_size = width * height * 3 + rgb_raw_data_offset;
+
+    // file size = width * height * 3 + rgb_raw_data_offset  ;
     header[2] = (unsigned char)(file_size & 0x000000ff);
     header[3] = (file_size >> 8)  & 0x000000ff;
     header[4] = (file_size >> 16) & 0x000000ff;
-    header[5] = (file_size >> 24) & 0x000000ff;  
+    header[5] = (file_size >> 24) & 0x000000ff;
+     
     // width
     header[18] = width & 0x000000ff;
     header[19] = (width >> 8)  & 0x000000ff;
@@ -98,16 +109,19 @@ void UltraImage::Save(const char *fileName){
     header[23] = (height >> 8)  & 0x000000ff;
     header[24] = (height >> 16) & 0x000000ff;
     header[25] = (height >> 24) & 0x000000ff;  
+    
+    // bitSizeimage
+    header[34] = biSizeImage &0x000000ff;
+    header[35] = (biSizeImage >> 8)  & 0x000000ff;
+    header[36] = (biSizeImage >> 16) & 0x000000ff;
+    header[37] = (biSizeImage >> 24) & 0x000000ff; 
  
     // write header
-    file.write((char*)header, sizeof(header));
+    file.write(header,54);
 
     // write image
     file.write((char*)ImgValue_t,sizeof(char)*width * height * 3);    
-    
-    file.close();
 }
-
 
 void UltraImage::DownSample(int fac){
     factor = fac;

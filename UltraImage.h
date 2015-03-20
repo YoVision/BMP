@@ -20,6 +20,7 @@ private:
        int file_size;           //file_size = width_d * height_d * 3  + rgb_raw_data_offset;
        unsigned char *ImgValue_s;          //Img RGB Info recently
        unsigned char *ImgValue_t;          //Img RGB Info changed
+       int biSizeImage;
 };
 
 #endif
